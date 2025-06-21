@@ -36,7 +36,15 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Setup project
-        run: call devops_ue\setup.bat
+        run: |
+          echo "--- Listing files before setup ---"
+          dir
+          echo "--- Running setup.bat ---"
+          call devops_ue\setup.bat
+          echo "--- Listing files after setup ---"
+          dir
+          echo "--- Listing devops_data content ---"
+          dir devops_data
         shell: cmd
 
       - name: Install Conan
