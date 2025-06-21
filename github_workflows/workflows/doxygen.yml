@@ -35,10 +35,25 @@ jobs:
           submodules: 'recursive'
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Create Doxyfile
+      - name: Create Doxyfile with Debugging
         run: |
+          echo "--- Current directory structure ---"
+          dir
+          echo.
+          echo "--- Checking for template file in devops_ue\setup ---"
+          dir devops_ue\setup\
+          echo.
+          echo "--- Attempting to create devops_data directory ---"
           mkdir devops_data
+          echo.
+          echo "--- Attempting to copy template ---"
           copy devops_ue\setup\Doxyfile.template devops_data\Doxyfile
+          echo.
+          echo "--- Final directory structure ---"
+          dir
+          echo.
+          echo "--- Checking content of devops_data ---"
+          dir devops_data
         shell: cmd
 
       - name: Install Conan
