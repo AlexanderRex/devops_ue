@@ -3,18 +3,23 @@ name: Game Documentation
 on:
   push:
     branches: 
-    - master
+    - main
+    - dev
   pull_request:
-    branches: 
-    - master
+    branches: [ "main", "dev" ]
+
 
 permissions:
+  contents: read
   pages: write
   deployments: write
   id-token: write
   
 env:
   CONAN_REVISIONS_ENABLED: 1
+
+concurrency:
+  group: "pages"
 
 jobs:
   docs:
@@ -30,31 +35,9 @@ jobs:
         shell: cmd
         
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-          token: ${{ secrets.PAT_TOKEN }}
-
-      - name: Create Doxyfile with Debugging
-        run: |
-          echo "--- Current directory structure ---"
-          dir
-          echo.
-          echo "--- Checking for template file in devops_ue\setup ---"
-          dir devops_ue\setup\
-          echo.
-          echo "--- Attempting to create devops_data directory ---"
-          mkdir devops_data
-          echo.
-          echo "--- Attempting to copy template ---"
-          copy devops_ue\setup\Doxyfile.template devops_data\Doxyfile
-          echo.
-          echo "--- Final directory structure ---"
-          dir
-          echo.
-          echo "--- Checking content of devops_data ---"
-          dir devops_data
-        shell: cmd
 
       - name: Install Conan
         run: pip install conan==1.61
@@ -75,13 +58,13 @@ jobs:
         run: ${{ env.DOXYGEN_EXE_PATH }} ${{ github.workspace }}\devops_data\Doxyfile
         
       - name: Upload Docs
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: Documentation\html
         
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5
         
       - name: Deploy To GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
