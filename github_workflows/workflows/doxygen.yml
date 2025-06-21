@@ -35,16 +35,10 @@ jobs:
           submodules: 'recursive'
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Setup project
+      - name: Create Doxyfile
         run: |
-          echo "--- Listing files before setup ---"
-          dir
-          echo "--- Running setup.bat ---"
-          call devops_ue\setup.bat
-          echo "--- Listing files after setup ---"
-          dir
-          echo "--- Listing devops_data content ---"
-          dir devops_data
+          mkdir devops_data
+          copy devops_ue\setup\Doxyfile.template devops_data\Doxyfile
         shell: cmd
 
       - name: Install Conan
